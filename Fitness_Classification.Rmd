@@ -1,0 +1,105 @@
+---
+title: "Fitness_CART"
+author: "Vikas Venkat Sigatapu"
+date: "10/20/2020"
+output: html_document
+---
+
+##Introductionn
+In this mini project, the aim is to analyze the data in the training set and classify it into A,B,C,D or E. The data contains a lot of fitness variables based on fitbit type devices and the goal is to classify them into catergories of exercise.
+
+###Installing the packages and Librariess
+caret and ggplot2 are the various packages that are required to install for importing the required libraries.
+
+```{r}
+#install.packages("caret")
+#install.packages("ggplot2")
+#install.packages("rpart")
+#install.packages("randomForest")
+```
+#Importingg Librariess
+caret libraryy i.e the classification and regressionn Trees are imported.
+readr libraryy is used for readingg csv files in R.
+```{r}
+library(caret)
+library(readr)
+library(rpart)
+library(randomForest)
+```
+
+## Gettingg the Dataa
+
+```{r}
+#Getting the Data
+###reading the training dataset
+trainingg <- read_csv("D:/R/Practical Machine Learning/pml-training.csv")
+summary(trainingg)
+#reading the test dataset
+testingg <- read_csv("D:/R/Practical Machine Learning/pml-testing.csv")
+summary(testingg)
+```
+
+##Exploratoryy Data Analysiss
+
+```{r}
+#Exploratory Data Analysiss
+###For obtaining the type of each columnn
+str(trainingg)
+
+###For checking the number of rows and columns in the datasett, the train datasett contains 19622 rows and 160 columns.
+dim(trainingg)
+
+###Taking count for the final results
+table(trainingg$classe)
+
+```
+#Cleaningg the Dataa
+Dealing with missing values
+
+
+```{r}
+#Exploratory Data Analysis
+###for obtaining the type of each columnn
+
+Count_na = sapply(1:dim(trainingg)[2],function(x)sum(is.na(trainingg[,x])))
+List_na = which(Count_na>0)
+colnames(trainingg[,c(1:7)])
+
+```
+###removingg the null valuess from the trainingg sett
+
+```{r}
+trainingg = trainingg[,-List_na]
+trainingg = trainingg[,-c(1:7)]
+trainingg$classe = factor(trainingg$classe)
+###removing the null values from the test sett
+testingg = testingg[,-List_na]
+testingg = testingg[,-c(1:7)]
+```
+#Buildingg the Modell
+Decision Tree
+```{r}
+#Exploratory Data Analysis
+###for obtaining the type of each column
+
+Classifier = rpart(formula = classe~.,data=trainingg)
+y_pred = predict(Classifier,testingg)
+print(y_pred)
+
+y_pred_actual = predict(Classifier,testingg,type="class")
+print(y_pred_actual)
+```
+
+#Randomm Forestt
+
+```{r}
+#Exploratory Data Analysiss
+###for obtaining the type of each columnn
+
+rfclassifier = randomForest(formula = classe~.,data=trainingg, ntree = 10)
+y_pred_rf = predict(rfclassifier,testingg)
+print(y_pred_rf)
+```
+
+
+
